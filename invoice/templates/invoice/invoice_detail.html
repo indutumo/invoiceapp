@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load humanize %}
+
+<div class="col s12">
+    <div class="card">
+        <div class="card-content">
+            <div class="row">
+                <div class="col s12 m12 l6">
+                    <table class="table responsive">
+                        <tr> <th>Inv No</th> <td>{{invoice.id}}</td> </tr>
+                        <tr> <th>Client</th> <td>{{invoice.client}}</td> </tr>
+                        <tr> <th>Email Address</th> <td>{{invoice.email_address}}</td> </tr>
+                        <tr> <th>Mobile Number</th> <td>{{invoice.mobile_number}}</td> </tr>
+                    </table>
+                </div>
+                <div class="col s12 m12 l6">
+                    <table class="table responsive">
+                        <tr> <th>Date</th> <td>{{invoice.date}}</td> </tr>
+                        <tr> <th>Amount</th> <td>{{invoice.amount|intcomma}}</td> </tr>
+                        <tr> <th>Vat</th> <td>{{invoice.vat|intcomma}}</td> </tr>
+                        <tr> <th>Total Amount</th> <td>{{invoice.total_amount|intcomma}}</td> </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-content">
+            <table class="table">
+                <thead>
+                    <tr>    
+                        <th>Item</th>
+                        <th>Description</th>
+                        <th style="text-align: right;">Quantity</th>
+                        <th style="text-align: right;">Unit Price</th>
+                        <th style="text-align: right;">Amount</th>
+                        <th style="text-align: right;">Vat</th>
+                        <th style="text-align: right;">Total</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for saleitem in saleitem  %}
+                    <tr>  
+                        <td>{{saleitem.item}}</td>
+                        <td>{{saleitem.description}}</td>
+                        <td style="text-align: right;">{{saleitem.quantity|intcomma}}</td>
+                        <td style="text-align: right;">{{saleitem.unit_price|intcomma}}</td>
+                        <td style="text-align: right;">{{saleitem.amount|intcomma}}</td>
+                        <td style="text-align: right;">{{saleitem.vat|intcomma}}</td>
+                        <td style="text-align: right;">{{saleitem.total|intcomma}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

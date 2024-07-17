@@ -1,0 +1,151 @@
+<!doctype html>
+{% load humanize %}
+{% load static %}
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Invoice</title>
+<style type="text/css">
+        @page {
+            size: a4 portrait;
+            margin: 1cm;
+        }
+        .title th,
+        .title td {
+            font-size: 1.1em;
+            font-weight: normal;
+            text-align: right;
+            padding-left: 0px !important;
+            padding-top: 5px !important;
+            border-bottom: 1px solid black;
+            border-collapse: collapse; 
+            padding: 3px;
+
+        }
+       .title th {
+            color: darkblue;
+       }
+
+        .title td {
+            color: black;
+        }
+        h4 {
+            font-size: 1.2em;
+            font-weight: normal;
+            text-align: center;
+            align-items: center;
+            float: center;
+            color: black;
+            padding-top: 0px;
+        }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .patient td th {
+            font-size: 1.5em;
+        }
+        .item {
+            font-size: 0.9em;
+        }
+        .title2 th,
+        .title2 td {
+            font-size: 1.1em;
+            font-weight: normal;
+            text-align: right;
+            padding-left: 0px !important;
+            border-collapse: collapse; 
+
+        }
+        .title1 tr th {
+            text-align: left;
+            font-weight: normal;
+        }
+
+       .title1 td {
+            text-align: left;
+            color: black;
+            font-size: 1em;
+            font-weight: normal;
+       }
+        .title3 tr th {
+            text-align: left;
+            color: darkblue;
+            font-weight: normal;
+        }
+        .payment tr th td {
+            font-size:  1.4em !important;
+            color: black !important;
+        }
+</style>
+</head>
+<body>
+    <div id="header_content">
+
+        <table class="title1">
+            <tr> <th><img src="file://{{organization.get_logo_path}}" width="100" height="85"></th><td>{{organization.detail|safe|linebreaksbr}}</td></tr>
+        </table>
+        <hr>
+        <p style="font-size: 2em; font-weight: bold; color: black; text-align: center; margin: -4px;">INVOICE</p>
+
+        <table class="title3 patient">
+            <tr><th></th> <td style="font-size: 1.3em; font-weight: bold; color: darkblue;">BILL TO</td> </tr>
+            <tr> <th >Client</th> <td style="width: 60%;">{{invoice.client}}</td>
+                <th>Invoice #</th> <td style="width: 20%;">{{invoice.id}}</td> 
+            </tr>
+            <tr> 
+                <th>Mobile No</th> <td style="width: 60%;">{{invoice.mobile_number}}</td> 
+                <th>Invoice Date </th> <td style="width:  20%;">{{invoice.date}} </td> 
+            </tr>
+            <tr> 
+                <th>Email</th> <td style="width: 60%;">{{invoice.email_address}}</td>
+                <th>Due Date </th> <td style="width:  20%;">{{invoice.due_date}}</td>
+            </tr>
+        </table>
+        <hr>
+    </div>
+
+        <table class="title item">
+            <thead>
+                <tr>    
+                    <th style="text-align: left;">Item</th>
+                    <th style="text-align: left;">Description</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Amount</th>
+                    <th>Vat</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for saleitem in saleitem  %}
+                <tr>  
+                    <td style="text-align: left;">{{saleitem.item}}</td>
+                    <td style="text-align: left;">{{saleitem.description}}</td>
+                    <td>{{saleitem.quantity|intcomma}}</td>
+                    <td>{{saleitem.unit_price|intcomma}}</td>
+                    <td>{{saleitem.price|intcomma}}</td>
+                    <td>{{saleitem.vat|intcomma}}</td>
+                    <td>{{saleitem.total|intcomma}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+
+        <table class="title2" style="padding-bottom: 2%;">
+            <td>
+                <tr> <th style="width: 50%;"></th><td>Sub Total</td><td>{{invoice.amount|intcomma}}</td> </tr>
+                <tr> <th style="width: 50%;"></th><td>Vat Amount</td><td>{{invoice.vat|intcomma}}</td> </tr>
+                <tr> <th style="width: 50%;"></th> <td>Total Amount</td><td>{{invoice.total|intcomma}}</td> </tr>
+                {% if invoice.paid_amount > 0.00 %}
+                <tr> <th style="width: 50%;"></th><td>Paid Amount</td><td>{{invoice.paid_amount|intcomma}}</td> </tr>
+                {% endif %}
+                {% if invoice.remaining_amount > 0.00 and invoice.paid_amount > 0.00 %}
+                <tr><th style="width: 50%;"></th><td>Remaining Amount</td><td>{{invoice.remaining_amount|intcomma}}</td> </tr>
+                {% endif %}
+            </td>
+        </table>
+        <hr>
+</body>
+</html>

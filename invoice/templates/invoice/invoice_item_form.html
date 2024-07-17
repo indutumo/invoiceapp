@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load humanize %}
+
+<div class="col s12">
+    <div class="card">
+        <div class="card-body">
+    		<a class="btn-sm btn btn-primary" href="{% url 'invoicepdf' pk=invoice.pk %}"> PDF</a>
+    	</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col s12 m12 l6">
+                    <table class="table responsive">
+                        <tr> <th>Inv No</th> <td>{{invoice.id}}</td> </tr>
+                        <tr> <th>Client</th> <td>{{invoice.client}}</td> </tr>
+                        <tr> <th>Email Address</th> <td>{{invoice.email_address}}</td> </tr>
+                        <tr> <th>Mobile Number</th> <td>{{invoice.mobile_number}}</td> </tr>
+                    </table>
+                </div>
+                <div class="col s12 m12 l6">
+                    <table class="table responsive">
+                        <tr> <th>Date</th> <td>{{invoice.date}}</td> </tr>
+                        <tr> <th>Amount</th> <td>{{invoice.amount|intcomma}}</td> </tr>
+                        <tr> <th>Vat</th> <td>{{invoice.vat|intcomma}}</td> </tr>
+                        <tr> <th>Total Amount</th> <td>{{invoice.total|intcomma}}</td> </tr>
+                    </table>
+                </div>
+        	</div>
+	        <div class="card-content">
+				<form method="post" onsubmit='disableButton3()'>
+			     	{% csrf_token %}
+			        <div class="row">
+			          	<div class="col-lg-3">
+			            	<label>Item Name</label>
+			            	<div class="input-field">
+			            		<input type="text" class="form-control" placeholder="Item Name" name="item">
+			            	</div>
+			          	</div>
+			          	<div class="col-lg-4">
+			            	<label>Item Description</label>
+			            	<div class="input-field">
+			            		<input type="text" class="form-control" placeholder="Item Description" name="description">
+			            	</div>
+			          	</div>
+			          	<div class="col-lg-1">
+			          	 	<label>Quantity</label>
+			            	<div class="input-field">
+			              		<input type="text" class="form-control" name="quantity" placeholder="Quantity" required>
+			            	</div>
+			          	</div>
+			          	<div class="col-lg-2">
+			            	<label>Unit Price</label>
+			            	<div class="input-field">
+			              		<input type="text" class="form-control" name="unit_price" placeholder="Unit Price" id="amount" required>
+			            	</div>
+			          	</div>
+
+			          	<div class="col-lg-2">
+			            	<label>VAT Rate</label>
+			            	<div class="input-field">
+			              		<input type="text" class="form-control" name="vat_rate" placeholder="VAT Rate" required>
+			            	</div>
+			          	</div>
+			        </div>
+			        <br>
+			        <button id="btn3" type="submit"  class="btn-sm btn btn-primary"> Submit </button>
+				</form>
+	        </div>
+
+	        <div class="card-content">
+	            <table class="table">
+	                <thead>
+	                    <tr>    
+	                        <th>Item</th>
+	                        <th>Description</th>
+	                        <th style="text-align: right;">Quantity</th>
+	                        <th style="text-align: right;">Unit Price</th>
+	                        <th style="text-align: right;">Price</th>
+	                        <th style="text-align: right;">Vat</th>
+	                        <th style="text-align: right;">Total</th>
+	                    </tr>
+	                </thead>
+
+	                <tbody>
+	                    {% for saleitem in saleitem  %}
+	                    <tr>  
+	                        <td>{{saleitem.item}}</td>
+	                        <td>{{saleitem.description}}</td>
+	                        <td style="text-align: right;">{{saleitem.quantity|intcomma}}</td>
+	                        <td style="text-align: right;">{{saleitem.unit_price|intcomma}}</td>
+	                        <td style="text-align: right;">{{saleitem.price|intcomma}}</td>
+	                        <td style="text-align: right;">{{saleitem.vat|intcomma}}</td>
+	                        <td style="text-align: right;">{{saleitem.total|intcomma}}</td>
+	                    </tr>
+	                    {% endfor %}
+	                </tbody>
+	            </table>
+	        </div>
+	    </div>
+    </div>
+</div>
+
+
+{% endblock %}

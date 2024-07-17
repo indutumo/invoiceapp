@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block content %}
+
+
+<div class="col s12">
+    <div class="card">
+        <div class="card-body">
+            <button type="button" class="btn-sm btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal"> + Invoice</button>
+
+            <div class="row" style="padding-bottom: 1%; padding-top: 1%;">
+                <div class="col s12 m12 l12">
+                    <form method="GET" action="{% url 'invoice_list' %}">
+                        <div class="row">          
+                            <div class="col s12 m12 l4">
+                                <input type="text" class="form-control"  name="year" {% if year %} value="{{year}}" {% endif %}>
+                            </div>
+                            <div class="col s12 m12 l8">
+                                <button type="submit" class="btn btn-primary">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <table class="table">
+                <thead>
+                    <tr>    
+                        <th>Client</th>
+                        <th>Inv No</th>
+                        <th>Date</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th style="text-align: right;">Amount</th>
+                        <th style="text-align: right;">Vat</th>
+                        <th style="text-align: right;">Total</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for invoice in invoice_list  %}
+                    <tr>  
+                        <td>{{invoice.client}}</td>
+                        <td><a href="{% url 'add_item_invoice' pk=invoice.pk %}">{{invoice.id}}</a></td>
+                        <td>{{invoice.date}}</td>
+                        <td>{{invoice.due_date}}</td>
+                        <td><span  class="badge blue">{{invoice.status}}</span></td>
+                        <td style="text-align: right;">{{invoice.amount|intcomma}}</td>
+                        <td style="text-align: right;">{{invoice.vat|intcomma}}</td>
+                        <td style="text-align: right;">{{invoice.total|intcomma}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="row">
+                <div class="col s4"></div>
+                <div class="col s8">
+                    {% if invoice_list.has_other_pages %}
+                    <ul class="pagination1">
+                        {% if invoice_list.has_previous %}
+                        <li><a href="?page={{ invoice_list.previous_page_number }}{% if year %}&year={{year}}{% endif %}">&laquo;</a></li>
+                        {% else %}
+                        <li class="disabled"><span>&laquo;</span></li>
+                        {% endif %}
+                        {% for i in invoice_list.paginator.page_range %}
+                        {% if invoice_list.number == i %}
+                        <li class="active"><span>{{ i }} <span class="sr-only"></span></span></li>
+                        {% elif i > invoice_list.number|add:'-4' and i < invoice_list.number|add:'4' %} <li><a
+                                href="?page={{ i }}{% if year %}&year={{year}}{% endif %}">{{i}}</a>
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+                            {% if invoice_list.has_next %}
+                            <li><a
+                                    href="?page={{ invoice_list.next_page_number }}{% if year %}&year={{year}}{% endif %}">&raquo;</a>
+                            </li>
+                            {% else %}
+                            <li class="disabled"><span>&raquo;</span></li>
+                            {% endif %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- The Modal -->
+<div class="modal" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Modal Heading</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form action="{% url 'create_invoice' %}" method="post">
+                    {% csrf_token %}
+                    <div class="mb-3 mt-3">
+                        <label class="form-label">Client Name:</label>
+                        <input type="text" class="form-control" placeholder="Client Name" name="client">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mobile Number:</label>
+                        <input type="text" class="form-control" placeholder="Mobile Number" name="mobile_number">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email Address:</label>
+                        <input type="text" class="form-control" placeholder="Email Address" name="email_address">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Address:</label>
+                        <input type="text" class="form-control" placeholder="Client Address" name="address">
+                    </div>
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
